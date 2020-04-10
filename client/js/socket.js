@@ -49,7 +49,7 @@ class PlaceSocket extends EventEmitter3 {
             return;
         }
 
-        this.socket = new WebSocket(`ws${window.location.protocol === "https:" ? "s" : ""}://${window.location.host}`);
+        this.socket = new WebSocket(`ws${window.location.protocol === "https:" ? "s" : ""}://${window.location.host.split(':')[0]}:$(WSPORT)`);
 
         this.socket.addEventListener("open", () => {
             this.state.reconnecting = false;
@@ -83,11 +83,12 @@ class PlaceSocket extends EventEmitter3 {
         this.socket.addEventListener("error", handleClosed);
         this.socket.addEventListener("close", handleClosed);
 
-        this.socket.addEventListener("message", (event) => {
-            const rawData = event.data;
-            let data;
+        this.socket.addEventListener("message", async (event) => {
+            let data = event.data;
             try {
-                data = JSON.parse(rawData);
+                if (event.data instanceof Blob) {
+                    data = JSON.parse(await event.data.text());
+                }
             } catch (e) {
                 console.error(`Couldn't parse the server payload:\n${e}`);
                 return;

@@ -2,13 +2,29 @@ const ws = require("uws");
 const Pixel = require("../models/pixel");
 const {SocketController} = require("./Sockets/SocketController");
 
-function WebsocketServer(app, httpServer) {
+function WebsocketServer(app) {
     app.logger.log('Websocket Server', "Attached to HTTP server.");
 
     class SocketServer {
 
         constructor() {
-            this.server = new ws.Server({server: httpServer});
+            const wsHost = process.env.WSHOST || app.config.wsHost;
+            const wsPort = process.env.WSPORT || app.config.wsPort
+            this.server = ws.App().ws('/*', {
+                open: (ws, req) => { 
+                    this.socketController.register(ws); 
+                },
+                message:  (ws, event, isBinary) => {
+                    ws.onmessage(event);
+                },
+                close: (ws, code, message) => {
+                    ws.onclose(code, message);
+                }
+            }).listen(wsHost, wsPort, (s) => {
+                if(s) {
+                    app.logger.log('WebSocketServer', `listening on ${wsHost}:${wsPort}...`, s);
+                }
+            });
             setInterval(() => this.checkUserCount(), 1000);
 
             this.socketController = new SocketController();
@@ -28,10 +44,6 @@ function WebsocketServer(app, httpServer) {
                     });
                 });
                 next();
-            });
-
-            this.server.on("connection", socket => {
-                this.socketController.register(socket);
             });
         }
 

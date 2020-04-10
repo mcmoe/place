@@ -188,9 +188,9 @@ function DialogController(dialog) {
     }.setup();
 }
 
-const defaultErrorMessage = "An unknown error occurred while trying to make that request.";
+const derr = "An unknown error occurred while trying to make that request.";
 var placeAjax = {
-	ajax: function(data, defaultErrorMessage = defaultErrorMessage, alwaysCallback = null) {
+	ajax: function(data, defaultErrorMessage = derr, alwaysCallback = null) {
 		return new Promise((resolve, reject) => {
 			function handleError(response) {
 				if(defaultErrorMessage) window.alert(response && response.error ? (response.error.message || defaultErrorMessage) : defaultErrorMessage);
@@ -204,22 +204,22 @@ var placeAjax = {
 			})
 		});
 	},
-	get: function(url, data = null, defaultErrorMessage = defaultErrorMessage, alwaysCallback = null) {
+	get: function(url, data = null, defaultErrorMessage = derr, alwaysCallback = null) {
 		return this.ajax({url: url, data: data, method: "GET"}, defaultErrorMessage, alwaysCallback);
 	},
-	post: function(url, data = null, defaultErrorMessage = defaultErrorMessage, alwaysCallback = null) {
+	post: function(url, data = null, defaultErrorMessage = derr, alwaysCallback = null) {
 		return this.ajax({url: url, data: data, method: "POST"}, defaultErrorMessage, alwaysCallback);
 	},
-	put: function(url, data = null, defaultErrorMessage = defaultErrorMessage, alwaysCallback = null) {
+	put: function(url, data = null, defaultErrorMessage = derr, alwaysCallback = null) {
 		return this.ajax({url: url, data: data, method: "PUT"}, defaultErrorMessage, alwaysCallback);
 	},
-	patch: function(url, data = null, defaultErrorMessage = defaultErrorMessage, alwaysCallback = null) {
+	patch: function(url, data = null, defaultErrorMessage = derr, alwaysCallback = null) {
 		return this.ajax({url: url, data: data, method: "PATCH"}, defaultErrorMessage, alwaysCallback);
 	},
-	delete: function(url, data = null, defaultErrorMessage = defaultErrorMessage, alwaysCallback = null) {
+	delete: function(url, data = null, defaultErrorMessage = derr, alwaysCallback = null) {
 		return this.ajax({url: url, data: data, method: "DELETE"}, defaultErrorMessage, alwaysCallback);
 	},
-	options: function(url, data = null, defaultErrorMessage = defaultErrorMessage, alwaysCallback = null) {
+	options: function(url, data = null, defaultErrorMessage = derr, alwaysCallback = null) {
 		return this.ajax({url: url, data: data, method: "OPTIONS"}, defaultErrorMessage, alwaysCallback);
 	}
 }

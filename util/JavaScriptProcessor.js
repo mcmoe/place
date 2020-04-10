@@ -1,10 +1,10 @@
 const gulp = require("gulp");
-const uglify = require("gulp-uglify");
-const babel = require("gulp-babel");
+const replace = require('gulp-replace');
+const uglify = require("gulp-terser");
 const sourcemaps = require('gulp-sourcemaps');
 const changed = require('gulp-changed');
 const del = require("del");
-
+const config = require('../config/config');
 class JavaScriptProcessor {
     constructor(app) {
         this.app = app;
@@ -27,17 +27,16 @@ class JavaScriptProcessor {
         gulp.task("watch", () => gulp.watch(this.paths.scripts.src, ["scripts"]));
         // Process JavaScript
         gulp.task("scripts", (cb) => {
-            this.app.logger.info('Babel', "Processing JavaScript…");
+            this.app.logger.info('JsProc', "Processing JavaScript…");
             var t = gulp.src(this.paths.scripts.src);
-            t = t.pipe(changed(this.paths.scripts.built))
+            t = t.pipe(replace('$(WSPORT)', process.env.WSPORT || config.wsPort));
+            t = t.pipe(changed(this.paths.scripts.built));
             t = t.pipe(sourcemaps.init());
-            t = t.pipe(babel({ presets: ["es2015", "es2016", "es2017"] }));
-            t = t.on("error", swallowError);
             if(!this.app.config.debug) t = t.pipe(uglify());
             t = t.on("error", swallowError);
             t = t.pipe(sourcemaps.write('.'));
             t = t.pipe(gulp.dest(this.paths.scripts.built));
-            t = t.on("end", () => this.app.logger.info('Babel', "Finished processing JavaScript."));
+            t = t.on("end", () => this.app.logger.info('JsProc', "Finished processing JavaScript."));
             return t;
         });
         this.watchJavaScript()

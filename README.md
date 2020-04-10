@@ -15,7 +15,7 @@ These instructions will help you get an instance of the project up and running o
 
 ### Prerequisites
 
-* Node 8 or **higher**
+* Node 10 ~~or **higher**~~ *(⚠️ must upgrade to gulp4 to use Node 12)*
 * [MongoDB](https://www.mongodb.com) *(sorry)*
 * [Yarn package manager](https://www.yarnpkg.com)
 * An internet connection

@@ -1,4 +1,5 @@
 const {PlaceSocket} = require("./PlaceSocket");
+const logger = require('../logger');
 
 let hardSocketLimit = 20;
 const socketTimeoutMinutes = 5;
@@ -96,12 +97,12 @@ exports.SocketController = class SocketController {
                         continue;
                     }
                     if (!socket.timeoutStats.checkedForActivity) {
-                        socket.dispatch("activity_check");
+                        socket.dispatch("activity_check").catch(e => logger.log('activity_check', e));
                         socket.timeoutStats.checkedForActivity = true;
                         continue;
                     }
                     if (!socket.timeoutStats.warned) {
-                        socket.dispatch("timeout_warning");
+                        socket.dispatch("timeout_warning").catch(e => logger.log('timeout_warning', e));
                         socket.timeoutStats.warned = true;
                         setTimeout(() => {
                             if (!socket.timeoutStats.warned) {
@@ -113,7 +114,7 @@ exports.SocketController = class SocketController {
                 }
             }
             resolve();
-        });
+        }).catch(e => logger.log('purge', e));
     }
 
     /**

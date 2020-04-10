@@ -1,4 +1,4 @@
-FROM node:carbon
+FROM node:dubnium
 LABEL maintainer="applebetas@dynastic.co"
 
 # Create app directory
@@ -8,10 +8,10 @@ WORKDIR /usr/src/app
 COPY package*.json yarn.lock ./
 
 # Install app dependencies
-RUN yarn install
+RUN yarn install && \
+    yarn cache clean
 
 # Bundle app source
 COPY . .
 
-EXPOSE 3000
 CMD [ "yarn", "start" ]

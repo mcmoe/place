@@ -97,7 +97,7 @@ app.modMiddleware = (req, res, next) => {
 app.recreateServer = () => {
     app.httpServer = new HTTPServer(app);
     app.server = app.httpServer.httpServer;
-    app.websocketServer = new WebsocketServer(app, app.server);
+    app.websocketServer = new WebsocketServer(app);
 }
 app.recreateServer();
 
@@ -119,6 +119,7 @@ mongoose.connection.once('connected', () => {
 
 // Process JS
 app.javascriptProcessor = new JavaScriptProcessor(app);
+app.javascriptProcessor.cleanJavaScript();
 app.javascriptProcessor.processJavaScript();
 
 app.stopServer = () => {
@@ -132,7 +133,7 @@ app.stopServer = () => {
 app.restartServer = () => {
     app.stopServer();
     app.server.listen(process.env.PORT || app.config.port, (process.env.ONLY_LISTEN_LOCAL ? process.env.ONLY_LISTEN_LOCAL === true : app.config.onlyListenLocal) ? "127.0.0.1" : null, null, () => {
-        app.logger.log('Startup', `Started Place server on port ${app.config.port}${app.config.onlyListenLocal ? " (only listening locally)" : ""}.`);
+        app.logger.log('Startup', `Started Place server on port ${process.env.PORT || app.config.port}${app.config.onlyListenLocal ? " (only listening locally)" : ""}.`);
     });
 }
 app.restartServer();
@@ -152,16 +153,16 @@ readline.on('line', i => {
     try {
         var output = eval(i)
         output instanceof Promise
-        ? output.then(a => {
-            console.log('Promise Resolved')
-            console.log(util.inspect(a, {depth: 0}))
-        }).catch(e => {
-            console.log('Promise Rejected')
-            console.log(e.stack)
-        })
-        : output instanceof Object
-            ? console.log(util.inspect(output, {depth: 0}))
-            : console.log(output)
+            ? output.then(a => {
+                console.log('Promise Resolved')
+                console.log(util.inspect(a, {depth: 0}))
+            }).catch(e => {
+                console.log('Promise Rejected')
+                console.log(e.stack)
+            })
+            : output instanceof Object
+                ? console.log(util.inspect(output, {depth: 0}))
+                : console.log(output)
     } catch (err) {
         console.log(err.stack)
     }

@@ -4,20 +4,35 @@ services:
     restart: always
     build: .
     ports:
-      - "127.0.0.1:3000:3000"
+      - "8000:8000"
+      - "9000:9000"
+      - "9229:9229" # node debug
     depends_on:
       - "db"
     environment:
       NODE_ENV: "production"
-      DATABASE: "mongodb://db/place"
-      PORT: 3000
+      DATABASE: "mongodb://db:27017/place"
+      PORT: 8000
+      WSPORT: 9000
+      WSHOST: "api"
       ONLY_LISTEN_LOCAL: "false"
+    # command: yarn debug # uncomment to allow remote debug
   db:
     image: mongo
     restart: always
     volumes:
       - mongo-volume:/data/db
-    expose:
-      - "27017"
+    ports:
+      - 27017:27017
+  # Useful if you want to browse mongodb via GUI
+  # dbgui:
+  #   image: huggingface/mongoku
+  #   restart: always
+  #   depends_on:
+  #     - "db"
+  #   ports:
+  #     - 3100:3100
+  #   environment:
+  #     MONGOKU_DEFAULT_HOST: "mongodb://db:27017"
 volumes:
   mongo-volume:

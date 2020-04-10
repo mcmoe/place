@@ -2,6 +2,8 @@ module.exports = {
     "secret": "CHANGETHISDONTUSETHISITSINSECURE", // <------- CHANGE THIS DONT USE THE DEFAULT YOU'LL GET HACKED AND DIE 100%
     "database": "mongodb://localhost/place",
     "port": 3000,
+    "wsPort": 4000,
+    "wsHost": '::', // https://github.com/uNetworking/uWebSockets.js/issues/219
     "boardSize": 1600, 
     "onlyListenLocal": true,
     "trustProxyDepth": 1, // How many levels of proxy to trust for IP

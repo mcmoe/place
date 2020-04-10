@@ -1,4 +1,5 @@
 const {EventEmitter} = require("events");
+const logger = require('../logger');
 const badRequest = (error) => ["bad_request", {success: false, error: error ? {message: error} : undefined}];
 exports.PlaceSocket = class PlaceSocket extends EventEmitter {
     /**
@@ -28,7 +29,7 @@ exports.PlaceSocket = class PlaceSocket extends EventEmitter {
         }
 
         socket.onmessage = event => {
-            let {data} = event;
+            let data = String.fromCharCode.apply(null, new Uint8Array(event));
             try {
                 data = JSON.parse(data);
             } catch (e) {
@@ -61,8 +62,15 @@ exports.PlaceSocket = class PlaceSocket extends EventEmitter {
 
         this.on("activity", () => this.resetTimeoutStats());
 
-        socket.onerror = () => this._closeFunction();
-        socket.onclose = () => this._closeFunction();
+        socket.onerror = () => {
+            logger.log('onerror socket');
+            this._closeFunction();
+        }
+
+        socket.onclose = () => {
+            logger.log('onclose socket');
+            this._closeFunction();
+        }
     }
 
     /**
@@ -84,8 +92,8 @@ exports.PlaceSocket = class PlaceSocket extends EventEmitter {
      * @param {any} payload the closing payload name
      */
     async close(event = undefined, payload = undefined) {
-        await this.dispatch(event, payload);
-        this.socket.close();
+        await this.dispatch(event, payload).catch(e => logger.log('close dispatch', e));
+        try { this.socket.close(); } catch(e) { logger.log('close socket', e); }
         this._closeFunction();
     }
 
@@ -95,11 +103,27 @@ exports.PlaceSocket = class PlaceSocket extends EventEmitter {
      * @type {string}
      */
     get ip() {
-        const ip = this.socket._socket.remoteAddress;
+        const ip = this.remoteAddressToString(this.socket.getRemoteAddress());
         if (typeof ip !== "string") {
             return undefined;
         }
         return ip;
+    }
+
+    /**
+     * https://github.com/uNetworking/uWebSockets.js/issues/58#issuecomment-567454532
+     * @param {string} address 
+     */
+    remoteAddressToString(address) {
+        if (address.byteLength == 4) {//IPv4
+            return new Uint8Array(address).join('.');
+        } else if (address.byteLength == 16) {//IPv6
+            let arr = Array.from(new Uint16Array(address));
+            if (arr[0] == 0 && arr[1] == 0 && arr[2] == 0 && arr[3] == 0 && arr[4] == 0 && arr[5] == 0xffff)  //IPv4 mapped to IPv6
+                return new Uint8Array(address.slice(12)).join('.');
+            else
+                return Array.from(new Uint16Array(address)).map(v => v.toString(16)).join(':').replace(/((^|:)(0(:|$))+)/, '::');
+        }
     }
 
     /**
