@@ -92,8 +92,8 @@ html(lang="en")
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href="https://www.dynastic.co", style="margin-right: -5px")
-            img(src="https://assets.dynastic.co/brand/img/icon-46.png", height="20")
+          a.navbar-brand(href="https://pixelplace.dev", style="margin-right: -5px; padding-top: 10px; padding-right: 20px;")
+            img(src="/img/dark_logo_no_circle_transparent.png", height="30")
           a.navbar-brand(href="/")
             | #{config.siteName}
             if config.debug
@@ -109,12 +109,9 @@ html(lang="en")
                 .
                   Community #[span.caret]
               ul.dropdown-menu
-                +renderNavItem("Official Subreddit", "https://www.reddit.com/r/place20", "reddit-alien")
-                +renderNavItem("Chat on Discord", "https://discord.gg/CgC8FTg", "comments")
-                +renderNavItem("Timelapses", "https://timelapse.canvas.place", "clock-o")
-                +renderNavItem("Merch", "https://merch.canvas.place", "shopping-cart")
-                +renderNavItem("Source Code", "https://www.github.com/dynastic/place", "github")
-            //- +renderNavItem("Donate", "https://www.paypal.me/dynastic", "money")
+                +renderNavItem("Source Code", "https://www.github.com/mcmoe/place", "github")
+                +renderNavItem("Original Host", "https://canvas.place", "chrome")
+                +renderNavItem("Original Source Code", "https://www.github.com/dynastic/place", "github")
             if user && userMod
               +renderNavItem(userAdmin ? "Admin" : "Moderator", "/admin", "gavel")
             +getViewExtensions("nav_right")
