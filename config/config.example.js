@@ -2,14 +2,16 @@ module.exports = {
     "secret": "CHANGETHISDONTUSETHISITSINSECURE", // <------- CHANGE THIS DONT USE THE DEFAULT YOU'LL GET HACKED AND DIE 100%
     "database": "mongodb://localhost/place",
     "port": 3000,
-    "wsPort": 4000,
     "wsHost": '::', // https://github.com/uNetworking/uWebSockets.js/issues/219
+    "wsPort": 4000,
+    "wsUri": ':4000', // if you want the client to connect to wsPort directly
+    // "wsUri": '/ws', // if you servers are behind a reverse proxy you should then redirect to wsPort
     "boardSize": 1600, 
     "onlyListenLocal": true,
     "trustProxyDepth": 1, // How many levels of proxy to trust for IP
     "debug": false,
     "googleAnalyticsTrackingID": "", // UA-XXXXXXXX-XX
-    "host": "https://canvas.place", // the publicly accessible URL of the site
+    "host": "https://pixelplace.dev", // the publicly accessible URL of the site
     "placeTimeout": 60,
     'enableChangelogs': true,
     'siteName': 'Place',

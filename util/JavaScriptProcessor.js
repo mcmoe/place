@@ -29,7 +29,7 @@ class JavaScriptProcessor {
         gulp.task("scripts", (cb) => {
             this.app.logger.info('JsProc', "Processing JavaScript…");
             var t = gulp.src(this.paths.scripts.src);
-            t = t.pipe(replace('$(WSPORT)', process.env.WSPORT || config.wsPort));
+            t = t.pipe(replace('$(WSURI)', process.env.WSURI || config.wsUri));
             t = t.pipe(changed(this.paths.scripts.built));
             t = t.pipe(sourcemaps.init());
             if(!this.app.config.debug) t = t.pipe(uglify());

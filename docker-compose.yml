@@ -13,8 +13,10 @@ services:
       NODE_ENV: "production"
       DATABASE: "mongodb://db:27017/place"
       PORT: 8000
-      WSPORT: 9000
       WSHOST: "api"
+      WSPORT: 9000
+      # WSURI: ":9000" # use this if you want the web client to connect directly to the ws server port
+      WSURI: "/ws" # use this if you want the web client to go through a reverse proxy (which will then forward to WSPORT)
       ONLY_LISTEN_LOCAL: "false"
     # command: yarn debug # uncomment to allow remote debug
   db:
